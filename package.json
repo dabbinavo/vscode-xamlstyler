@@ -8,6 +8,7 @@
     "name": "Christian Fischerauer"
   },
   "license": "MIT",
+  "icon": "media/logo-winui.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/dabbinavo/vscode-xamlstyler"
@@ -35,6 +36,8 @@
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
     "vscode:prepublish": "npm run package",
     "package": "npm run check-types && node esbuild.js --production",
+    "publish": "vsce publish",
+    "publish-pre-release": "vsce publish --pre-release",
     "compile-tests": "tsc -p . --outDir out",
     "pretest": "npm run compile-tests",
     "test": "vscode-test"
