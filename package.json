@@ -11,9 +11,7 @@
   ],
   "activationEvents": [
     "onLanguage:xml",
-    "onLanguage:AXAML",
-    "workspaceContains:**/*.axaml",
-    "workspaceContains:**/*.xaml"
+    "onLanguage:AXAML"
   ],
   "main": "./out/extension.js",
   "contributes": {},
