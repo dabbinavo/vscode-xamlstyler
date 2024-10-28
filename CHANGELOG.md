@@ -9,6 +9,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 - Use CHANGELOG.md file
 - Remove unnecessary template files
+- Add badge for Visual Studio Marketplace version
 
 ## [0.0.1]
 
