@@ -14,13 +14,14 @@ export class Formatter {
       const lastLine = document.lineAt(document.lineCount - 1);
 
       let text = document.getText();
+      let extension = path.extname(document.fileName);
 
       try {
         // store the text into a temporary file of the vscode extension in order to process it with an external tool in the next step
         const tempDir = os.tmpdir();
         const filename = path.join(
           tempDir,
-          `xamlstyler-${randomBytes(16).toString("hex")}.tmp`
+          `xamlstyler-${randomBytes(16).toString("hex")}.${extension}`
         );
 
         fs.mkdirSync(path.dirname(filename), { recursive: true });

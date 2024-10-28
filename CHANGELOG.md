@@ -10,6 +10,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Use CHANGELOG.md file
 - Remove unnecessary template files
 - Add badge for Visual Studio Marketplace version
+- Correctly detect the xaml file type based on the extension (`.xaml` or `.axaml`)
 
 ## [0.0.1]
 
