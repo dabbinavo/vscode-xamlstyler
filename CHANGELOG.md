@@ -6,4 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+### Fixed
+- Use CHANGELOG.md file
+- Remove unnecessary template files
+
+## [0.0.1]
+
 - Initial release
