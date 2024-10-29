@@ -27,7 +27,18 @@
     "onLanguage:AXAML"
   ],
   "main": "./dist/extension.js",
-  "contributes": {},
+  "contributes": {
+    "configuration": {
+      "title": "XAML Styler",
+      "properties": {
+        "xamlstyler.format.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable XAML Styler as a formatter."
+        }
+      }
+    }
+  },
   "scripts": {
     "compile": "npm run check-types && node esbuild.js",
     "check-types": "tsc --noEmit",
