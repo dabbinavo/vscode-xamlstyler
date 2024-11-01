@@ -1,4 +1,4 @@
-![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/dabbinavo.xamlstyler?include_prereleases&label=Visual%20Studio%20Code%20Marketplace)
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/dabbinavo.xamlstyler?include_prereleases&label=Visual%20Studio%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=dabbinavo.xamlstyler)
 
 # xamlstyler README
 
