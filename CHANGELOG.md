@@ -4,7 +4,10 @@ All notable changes to the "xamlstyler" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [0.0.2]
+
+### Added
+- Introduce `xamlstyler.format.enable` setting
 
 ### Fixed
 - Use CHANGELOG.md file

@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import { DependencyChecker } from "./dependencyChecker";
-import { XamlDocumentFormattingEditProvider } from "./xamlFormat";
 import { getXamlStylerConfig } from "./config";
 import * as util from "./common";
+import { XamlFormatter } from "./xamlFormatter";
+import { SettingObserver } from "./settingObserver";
 
 // This method is called when your extension is activated
 export async function activate(context: vscode.ExtensionContext) {
@@ -16,14 +17,11 @@ export async function activate(context: vscode.ExtensionContext) {
     return;
   }
 
-  if (getXamlStylerConfig().format.enable) {
-    console.info("Registering XAML document formatting provider");
-    const disposable = vscode.languages.registerDocumentFormattingEditProvider(
-      util.documentSelector,
-      new XamlDocumentFormattingEditProvider()
-    );
-    context.subscriptions.push(disposable);
-  }
+  const xamlFormatter = new XamlFormatter(context);
+  new SettingObserver(context, xamlFormatter);
+
+  context.subscriptions.push(xamlFormatter);
+
 }
 
 export function deactivate() {}

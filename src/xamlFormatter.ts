@@ -5,7 +5,45 @@ import * as os from "os";
 import { randomBytes } from "crypto";
 import { exec } from "child_process";
 
-export class Formatter {
+export class XamlFormatter {
+  private _disposable: vscode.Disposable | undefined;
+
+  constructor(context: vscode.ExtensionContext) {}
+
+  register(selector: vscode.DocumentFilter[]): void {
+    console.log("Registering XamlFormatter");
+    const provider = new XamlDocumentFormattingEditProvider();
+    this._disposable = vscode.languages.registerDocumentFormattingEditProvider(
+      selector,
+      provider
+    );
+  }
+
+  dispose(): void {
+    if (this._disposable) {
+      console.log("Disposing XamlFormatter");
+      this._disposable.dispose();
+    }
+  }
+}
+
+class XamlDocumentFormattingEditProvider
+  implements vscode.DocumentFormattingEditProvider
+{
+  private formatter: Formatter;
+
+  constructor() {
+    this.formatter = new Formatter();
+  }
+
+  provideDocumentFormattingEdits(
+    document: vscode.TextDocument
+  ): vscode.ProviderResult<vscode.TextEdit[]> {
+    return this.formatter.formatDocument(document);
+  }
+}
+
+class Formatter {
   public formatDocument(
     document: vscode.TextDocument
   ): Thenable<vscode.TextEdit[]> {
@@ -62,21 +100,5 @@ export class Formatter {
         resolve(formattedText);
       });
     });
-  }
-}
-
-export class XamlDocumentFormattingEditProvider
-  implements vscode.DocumentFormattingEditProvider
-{
-  private formatter: Formatter;
-
-  constructor() {
-    this.formatter = new Formatter();
-  }
-
-  provideDocumentFormattingEdits(
-    document: vscode.TextDocument
-  ): vscode.ProviderResult<vscode.TextEdit[]> {
-    return this.formatter.formatDocument(document);
   }
 }
