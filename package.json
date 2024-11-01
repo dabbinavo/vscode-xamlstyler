@@ -1,7 +1,7 @@
 {
   "name": "xamlstyler",
   "displayName": "XAML Styler",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "dabbinavo",
   "description": "XAML Styler is used to format XAML source code based on a set of styling rules. This tool can help you/your team maintain a better XAML coding style as well as a much better XAML readability.",
   "author": {
@@ -28,16 +28,330 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "configuration": {
-      "title": "XAML Styler",
-      "properties": {
-        "xamlstyler.format.enable": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable XAML Styler as a formatter."
+    "configuration": [
+      {
+        "title": "General",
+        "properties": {
+          "xamlstyler.format.enable": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable XAML Styler to format .xaml and .axaml files."
+          }
+        }
+      },
+      {
+        "title": "Attribute Formatting",
+        "properties": {
+          "xamlstyler.attributes.formatting.indentation": {
+            "title": "Attribute Indentation",
+            "description": "Defines the number of spaces that attributes are indented on elements with more than one line of attributes. A value of 0 will align indentation with the first attribute.",
+            "type": "number",
+            "minimum": -1,
+            "default": 0,
+            "order": 0
+          },
+          "xamlstyler.attributes.formatting.indentationStyle": {
+            "title": "Attribute Indentation Style",
+            "description": "Defines how attributes are indented. Options: Mixed (tabs, if using them, then spaces), Spaces (always use spaces).",
+            "type": "string",
+            "enum": [
+              "Spaces",
+              "Tabs"
+            ],
+            "default": "Spaces",
+            "order": 1
+          },
+          "xamlstyler.attributes.formatting.tolerance": {
+            "title": "Attribute Tolerance",
+            "description": "Defines the maximum number of attributes allowed on a single line. If the number of attributes exceeds this value, XAML Styler will break the attributes up across multiple lines. A value of less than 1 means always break up the attributes.",
+            "type": "number",
+            "minimum": 0,
+            "default": 2,
+            "order": 2
+          },
+          "xamlstyler.attributes.formatting.keepFirstOnSameLine": {
+            "title": "Keep First Attribute On Same Line",
+            "description": "Defines whether the first line of attribute(s) should appear on the same line as the element's start tag.",
+            "type": "boolean",
+            "default": false,
+            "order": 3
+          },
+          "xamlstyler.attributes.formatting.maxCharactersPerLine": {
+            "title": "Max Attribute Characters Per Line",
+            "markdownDescription": "Defines the maximum character length of attributes an element can have on each line after the start tag (not including indentation characters). A value of less than 1 means no limit.\n_Note: This setting only takes effect if **Max Attributes Per Line** is greater than 1 and **Attribute Tolerance** is greater than 2._",
+            "type": "number",
+            "default": 0,
+            "order": 4
+          },
+          "xamlstyler.attributes.formatting.maxPerLine": {
+            "title": "Max Attributes Per Line",
+            "markdownDescription": "Defines the maximum number of attributes an element can have on each line after the start tag if the number of attributes exceeds the **Attribute Tolerance**. A value of less than 1 means no limit.",
+            "type": "number",
+            "default": 1,
+            "order": 5
+          },
+          "xamlstyler.attributes.formatting.newlineExcemptionElements": {
+            "title": "Newline Excemption Elements",
+            "description": "Defines a list of elements whose attributes should not be broken across lines.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "RadialGradientBrush",
+              "GradientStop",
+              "LinearGradientBrush",
+              "ScaleTransfom",
+              "SkewTransform",
+              "RotateTransform",
+              "TranslateTransform",
+              "Trigger",
+              "Setter"
+            ],
+            "order": 6
+          },
+          "xamlstyler.attributes.formatting.removeDesignTimeReferences": {
+            "title": "Remove Design Time References",
+            "description": "Defines whether design-time references automatically added to new pages and controls should be removed.",
+            "type": "boolean",
+            "default": false,
+            "order": 7
+          },
+          "xamlstyler.attributes.formatting.separateByGroups": {
+            "title": "Separate By Groups",
+            "description": "Defines whether attributes belonging to different rule groups should be put on separate lines, while, if possible, keeping attributes in the same group on the same line.",
+            "type": "boolean",
+            "default": false,
+            "order": 8
+          }
+        }
+      },
+      {
+        "title": "Attribute Reordering",
+        "properties": {
+          "xamlstyler.attributes.reordering.enable": {
+            "title": "Enable Attribute Reordering",
+            "description": "Defines whether attributes should be reordered. If false, attributes will not be reordered in any way.",
+            "type": "boolean",
+            "default": true,
+            "order": 0
+          },
+          "xamlstyler.attributes.reordering.ruleGroups": {
+            "title": "Attribute Ordering Rule Groups",
+            "description": "Defines attribute ordering rule groups. Each string element is one group. Use ',' as a delimiter between attributes. 'DOS' wildcards are allowed. XAML Styler will order attributes in groups from top to bottom, and within groups left to right.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "x:Class",
+              "xmlns, xmlns:x",
+              "xmlns:*",
+              "x:Key, Key, x:Name, Name, x:Uid, Uid, Title",
+              "Grid.Row, Grid.RowSpan, Grid.Column, Grid.ColumnSpan, Canvas.Left, Canvas.Top, Canvas.Right, Canvas.Bottom",
+              "Width, Height, MinWidth, MinHeight, MaxWidth, MaxHeight",
+              "Margin, Padding, HorizontalAlignment, VerticalAlignment, HorizontalContentAlignment, VerticalContentAlignment, Panel.ZIndex",
+              "*:*, *",
+              "PageSource, PageIndex, Offset, Color, TargetName, Property, Value, StartPoint, EndPoint",
+              "mc:Ignorable, d:IsDataSource, d:LayoutOverrides, d:IsStaticText",
+              "Storyboard.*, From, To, Duration"
+            ],
+            "order": 1
+          },
+          "xamlstyler.attributes.reordering.firstLineAttributes": {
+            "title": "First Line Attributes",
+            "markdownDescription": "Defines a list of attributes which should always appear on the same line as the element's start tag. **Attribute Reordering** must be enabled for this setting to take effect.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "order": 2
+          },
+          "xamlstyler.attributes.reordering.byName": {
+            "title": "Order Attributes by Name",
+            "description": "Defines whether attributes should be ordered by name if not determined by a rule.",
+            "type": "boolean",
+            "default": true,
+            "order": 3
+          },
+          "xamlstyler.attributes.reordering.ignoreDesignTimeReferencePrefix": {
+            "title": "Ignore Design-Time Reference Prefix",
+            "description": "Defines whether attributes with the design-time reference namespace prefix are ignored when ordering.",
+            "type": "boolean",
+            "default": false,
+            "order": 4
+          }
+        }
+      },
+      {
+        "title": "Element Formatting",
+        "properties": {
+          "xamlstyler.elements.endingBracketOnNewLine": {
+            "title": "Put Ending Bracket On New Line",
+            "description": "Defines whether to put closing brackets on a new line.",
+            "type": "boolean",
+            "default": false,
+            "order": 0
+          },
+          "xamlstyler.elements.removeEndingTagOfEmptyElement": {
+            "title": "Remove Ending Tag Of Empty Element",
+            "description": "Defines whether to remove the end tag of an empty element.",
+            "type": "boolean",
+            "default": true,
+            "order": 1
+          },
+          "xamlstyler.elements.spaceBeforeClosingSlashInSelfClosingElement": {
+            "title": "Space Before Closing Slash In Self-Closing Element",
+            "description": "Defines whether there should be a space before the slash in ending brackets for self-closing elements.",
+            "type": "boolean",
+            "default": true,
+            "order": 2
+          },
+          "xamlstyler.elements.rootElementLineBreaksBetweenAttributes": {
+            "title": "Root Element Line Breaks Between Attributes",
+            "description": "Defines whether attributes of the document root element are broken into multiple lines. Options: Default, Always, Never.",
+            "type": "string",
+            "enum": [
+              "Default",
+              "Always",
+              "Never"
+            ],
+            "default": "Default",
+            "order": 3
+          }
+        }
+      },
+      {
+        "title": "Element Reordering",
+        "properties": {
+          "xamlstyler.elements.reordering.reorderVisualStateManager": {
+            "title": "Reorder Visual State Manager",
+            "description": "Defines whether to reorder the visual state manager. When set to first or last, the visual state manager will be moved to the first or last child element in its parent, respectively, otherwise it will not be moved. Options: None (leave as is), First, Last.",
+            "type": "string",
+            "enum": [
+              "None",
+              "First",
+              "Last"
+            ],
+            "default": "Last",
+            "order": 0
+          },
+          "xamlstyler.elements.reordering.reorderGridPanelChildren": {
+            "title": "Reorder Grid Panel Children",
+            "description": "Defines whether to reorder the children of a Grid by row/column. When true, children will be reordered in an ascending fashion by looking first at Grid.Row, then by Grid.Column.",
+            "type": "boolean",
+            "default": false,
+            "order": 1
+          },
+          "xamlstyler.elements.reordering.reorderCanvasPanelChildren": {
+            "title": "Reorder Canvas Panel Children",
+            "description": "Defines whether to reorder the children of a Canvas by left/top/right/bottom. When true, children will be reordered in an ascending fashion by first at Canvas.Left, then by Canvas.Top, Canvas.Right, and finally, Canvas.Bottom.",
+            "type": "boolean",
+            "default": false,
+            "order": 2
+          },
+          "xamlstyler.elements.reordering.reorderSetters": {
+            "title": "Reorder Setters",
+            "description": "Reorder Setters by",
+            "type": "string",
+            "enum": [
+              "None",
+              "Property",
+              "TargetName",
+              "TargetNameThenProperty"
+            ],
+            "default": "None",
+            "order": 3
+          }
+        }
+      },
+      {
+        "title": "Markup Extension",
+        "properties": {
+          "xamlstyler.markupExtension.enableFormatting": {
+            "title": "Enable Markup Extension Formatting",
+            "description": "Defines whether to format Markup Extensions (attributes containing '{}'). When true, attributes with markup extensions will always be put on a new line, unless the element is under the attribute tolerance or one of the specified elements is in the list of elements with no line breaks between attributes.",
+            "type": "boolean",
+            "default": true,
+            "order": 0
+          },
+          "xamlstyler.markupExtension.KeepOnOneLine": {
+            "title": "Markup Extensions to Keep on One Line",
+            "description": "Keep Markup Extensions of these types on one line",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": "x:Bind, Binding"
+          },
+          "order": 1
+        }
+      },
+      {
+        "title": "Miscellaneous",
+        "properties": {
+          "xamlstyler.miscellaneous.commentPadding": {
+            "title": "Comment Padding",
+            "description": "Determines the number of spaces a XAML single-line comment should be padded with.",
+            "type": "number",
+            "default": 2,
+            "order": 0
+          }
+        }
+      },
+      {
+        "title": "Thickness Formatting",
+        "properties": {
+          "xamlstyler.thicknessFormatting.SeparatorStyle": {
+            "title": "Thickness Separator Style",
+            "description": "Defines how thickness attributes (i.e., margin, padding, etc.) should be formatted. Options: None (leave as is), Space, Comma.",
+            "type": "string",
+            "enum": [
+              "None",
+              "Comma",
+              "Space"
+            ],
+            "default": "Comma",
+            "order": 0
+          },
+          "xamlstyler.thicknessFormatting.Attributes": {
+            "title": "Thickness Attributes",
+            "description": "Defines a list of attributes that get reformatted if content appears to be a thickness.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "Margin",
+              "Padding",
+              "BorderThickness",
+              "ThumbnailClipMargin"
+            ],
+            "order": 1
+          }
+        }
+      },
+      {
+        "title": "Configuration File",
+        "properties": {
+          "xamlstyler.configurationFile.searchToDriveRoot": {
+            "title": "Search to Drive Root",
+            "description": "When set to true, XAML Styler will look for an external XAML Styler configuration file not only up through your solution directory, but up through the drives root of the current solution so you can share one configuration file through multiple solutions.",
+            "type": "boolean",
+            "default": false,
+            "order": 0
+          },
+          "xamlstyler.configurationFile.external": {
+            "title": "External Configuration File",
+            "description": "Defines location of external XAML Styler configuration file. Specifying an external configuration file allows you to easily point multiple instances to a shared configuration. The configuration path can be local or network-based. Invalid configurations will be ignored.",
+            "type": "string",
+            "default": "",
+            "order": 1
+          }
         }
       }
-    }
+    ]
   },
   "scripts": {
     "compile": "npm run check-types && node esbuild.js",
