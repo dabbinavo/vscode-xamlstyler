@@ -55,8 +55,8 @@
             "description": "Defines how attributes are indented. Options: Mixed (tabs, if using them, then spaces), Spaces (always use spaces).",
             "type": "string",
             "enum": [
-              "Spaces",
-              "Tabs"
+              "Mixed",
+              "Spaces"
             ],
             "default": "Spaces",
             "order": 1
@@ -283,9 +283,12 @@
             "items": {
               "type": "string"
             },
-            "default": "x:Bind, Binding"
-          },
-          "order": 1
+            "default": [
+              "x:Bind",
+              "Binding"
+            ],
+            "order": 1
+          }
         }
       },
       {
@@ -309,8 +312,8 @@
             "type": "string",
             "enum": [
               "None",
-              "Comma",
-              "Space"
+              "Space",
+              "Comma"
             ],
             "default": "Comma",
             "order": 0
