@@ -90,8 +90,8 @@
             "default": 1,
             "order": 5
           },
-          "xamlstyler.attributes.formatting.newlineExcemptionElements": {
-            "title": "Newline Excemption Elements",
+          "xamlstyler.attributes.formatting.newlineExemptionElements": {
+            "title": "Newline Exemption Elements",
             "description": "Defines a list of elements whose attributes should not be broken across lines.",
             "type": "array",
             "items": {
@@ -101,11 +101,12 @@
               "RadialGradientBrush",
               "GradientStop",
               "LinearGradientBrush",
-              "ScaleTransfom",
+              "ScaleTransform",
               "SkewTransform",
               "RotateTransform",
               "TranslateTransform",
               "Trigger",
+              "Condition",
               "Setter"
             ],
             "order": 6

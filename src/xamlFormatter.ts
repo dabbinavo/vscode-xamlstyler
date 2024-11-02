@@ -4,15 +4,21 @@ import * as path from "path";
 import * as os from "os";
 import { randomBytes } from "crypto";
 import { exec } from "child_process";
+import { XamlConfigurationManager } from "./xamlConfigurationManager";
 
 export class XamlFormatter {
   private _disposable: vscode.Disposable | undefined;
+  private _configurationManager: XamlConfigurationManager;
 
-  constructor(context: vscode.ExtensionContext) {}
+  constructor(configurationManager: XamlConfigurationManager) {
+    this._configurationManager = configurationManager;
+  }
 
   register(selector: vscode.DocumentFilter[]): void {
     console.log("Registering XamlFormatter");
-    const provider = new XamlDocumentFormattingEditProvider();
+    const provider = new XamlDocumentFormattingEditProvider(
+      this._configurationManager
+    );
     this._disposable = vscode.languages.registerDocumentFormattingEditProvider(
       selector,
       provider
@@ -32,8 +38,8 @@ class XamlDocumentFormattingEditProvider
 {
   private formatter: Formatter;
 
-  constructor() {
-    this.formatter = new Formatter();
+  constructor(configurationManager: XamlConfigurationManager) {
+    this.formatter = new Formatter(configurationManager);
   }
 
   provideDocumentFormattingEdits(
@@ -44,6 +50,12 @@ class XamlDocumentFormattingEditProvider
 }
 
 class Formatter {
+  private configurationManager: XamlConfigurationManager;
+
+  public constructor(configurationManager: XamlConfigurationManager) {
+    this.configurationManager = configurationManager;
+  }
+
   public formatDocument(
     document: vscode.TextDocument
   ): Thenable<vscode.TextEdit[]> {
@@ -85,7 +97,11 @@ class Formatter {
   private runXStyler(filePath: string): Thenable<string> {
     return new Promise((resolve, reject) => {
       // Construct the xstyler command with necessary parameters
-      const command = `xstyler --roll-forward Major --file "${filePath}" --write-to-stdout --ignore`;
+      let command = `xstyler --roll-forward Major --file "${filePath}" --write-to-stdout --ignore`;
+
+      if (this.configurationManager.XamlConfigurationPath && fs.existsSync(this.configurationManager.XamlConfigurationPath)) {
+        command += ` --config "${this.configurationManager.XamlConfigurationPath}"`;
+      }
 
       // Run the command using child_process
       exec(command, (error, stdout, stderr) => {

@@ -2,25 +2,41 @@ import * as vscode from "vscode";
 import { XamlFormatter } from "./xamlFormatter";
 import { getXamlStylerConfig } from "./config";
 import * as util from "./common";
+import { XamlConfigurationManager } from "./xamlConfigurationManager";
 
 export class SettingObserver {
   private _formatter: XamlFormatter;
+  private _configurationManager: XamlConfigurationManager;
+  private _disposables: vscode.Disposable[] = [];
 
-  constructor(context: vscode.ExtensionContext, formatter: XamlFormatter) {
+  constructor(
+    context: vscode.ExtensionContext,
+    formatter: XamlFormatter,
+    configurationManager: XamlConfigurationManager
+  ) {
     this._formatter = formatter;
+    this._configurationManager = configurationManager;
 
     this._updateFormatter();
+    this._configurationManager.updateConfig();
 
-    let disposable = vscode.workspace.onDidChangeConfiguration(
+    vscode.workspace.onDidChangeConfiguration(
       this._onConfigChange,
-      this
+      this,
+      this._disposables
     );
-    context.subscriptions.push(disposable);
   }
 
   private _onConfigChange = (e: vscode.ConfigurationChangeEvent): void => {
     if (e.affectsConfiguration("xamlstyler.format.enable")) {
       this._updateFormatter();
+    }
+    if (e.affectsConfiguration("xamlstyler")) {
+      XamlConfigurationManager.configurationMap.forEach((value: string) => {
+        if (e.affectsConfiguration(`xamlstyler.${value}`)) {
+          this._configurationManager.updateConfig();
+        }
+      });
     }
   };
 
@@ -33,5 +49,9 @@ export class SettingObserver {
     } else {
       this._formatter.dispose();
     }
+  }
+
+  dispose(): void {
+    this._disposables.forEach((d) => d.dispose());
   }
 }
