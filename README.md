@@ -15,6 +15,11 @@ XAML Styler is a Visual Studio Code extension that formats AXAML/XAML files. It 
 
 ## Extension Settings
 
+### `xamlstyler.configurationFile.external` (default: "")
+Specify an external configuration file instead of using the XAML formatter settings specified in the VSCode extension settings.
+
+This setting supports the `${workspaceFolder}` variable.
+
 ## Known Issues
 
 Feel free to contribute to the following known issues:
@@ -23,4 +28,3 @@ Feel free to contribute to the following known issues:
 - Indendation settings of the VSCode IDE are currently not respected
 - The following extension settings are currently not implemented:
   - `xamlstyler.configurationFile.searchToDriveRoot`
-  - `xamlstyler.configurationFile.external`

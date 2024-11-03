@@ -5,6 +5,8 @@ import * as os from "os";
 import { randomBytes } from "crypto";
 import { exec } from "child_process";
 import { XamlConfigurationManager } from "./xamlConfigurationManager";
+import { outputChannel } from "./common";
+import { getXamlStylerConfig } from "./config";
 
 export class XamlFormatter {
   private _disposable: vscode.Disposable | undefined;
@@ -77,8 +79,13 @@ class Formatter {
         fs.mkdirSync(path.dirname(filename), { recursive: true });
 
         fs.writeFileSync(filename, text);
+
+        const configurationPath = this.resolveConfigurationPath(
+          document.uri
+        );
+
         // process the text with an external tool
-        this.runXStyler(filename).then((formattedText) => {
+        this.runXStyler(filename, configurationPath).then((formattedText) => {
           // remove the temporary file
           fs.unlinkSync(filename);
           resolve([
@@ -94,14 +101,84 @@ class Formatter {
     });
   }
 
-  private runXStyler(filePath: string): Thenable<string> {
+  private resolveConfigurationPath(
+    documentPath: vscode.Uri
+  ): string | undefined {
+    const externalConfigurationFile = getXamlStylerConfig()
+      .get<string>("configurationFile.external")
+      ?.trim();
+
+    if (externalConfigurationFile && externalConfigurationFile !== "") {
+      if (externalConfigurationFile.startsWith("${workspaceFolder")) {
+        return this.resolveWorkspaceFolder(
+          externalConfigurationFile,
+          documentPath
+        );
+      } else if (fs.existsSync(externalConfigurationFile)) {
+        return externalConfigurationFile;
+      }
+    }
+
+    let configPath = this.configurationManager.XamlConfigurationPath;
+    if (configPath && fs.existsSync(configPath)) {
+      return configPath;
+    }
+    return undefined;
+  }
+
+  private resolveWorkspaceFolder(
+    configFilePath: string,
+    resourceUri: vscode.Uri | undefined
+  ): string {
+    const workspaceFolderMatch = configFilePath.match(
+      /\$\{workspaceFolder(?:\:([^}]+))?\}/
+    );
+
+    if (workspaceFolderMatch) {
+      const specifiedFolderName = workspaceFolderMatch[1];
+
+      let targetWorkspaceFolder: vscode.WorkspaceFolder | undefined;
+      if (specifiedFolderName) {
+        // Find the workspace folder with the specific name
+        targetWorkspaceFolder = vscode.workspace.workspaceFolders?.find(
+          (folder) => folder.name === specifiedFolderName
+        );
+      } else if (resourceUri) {
+        // If no specific name, use the folder associated with the resourceUri
+        targetWorkspaceFolder =
+          vscode.workspace.getWorkspaceFolder(resourceUri);
+      }
+
+      // Default to the first workspace folder if none matched by name or URI
+      if (!targetWorkspaceFolder && vscode.workspace.workspaceFolders) {
+        targetWorkspaceFolder = vscode.workspace.workspaceFolders[0];
+      }
+
+      // Replace the matched `${workspaceFolder}` (or `${workspaceFolder:<name>}`) with the path
+      if (targetWorkspaceFolder) {
+        configFilePath = configFilePath.replace(
+          workspaceFolderMatch[0],
+          targetWorkspaceFolder.uri.fsPath
+        );
+      }
+    }
+
+    return configFilePath;
+  }
+
+  private runXStyler(
+    filePath: string,
+    configurationPath: string | undefined
+  ): Thenable<string> {
     return new Promise((resolve, reject) => {
       // Construct the xstyler command with necessary parameters
       let command = `xstyler --roll-forward Major --file "${filePath}" --write-to-stdout --ignore`;
 
-      if (this.configurationManager.XamlConfigurationPath && fs.existsSync(this.configurationManager.XamlConfigurationPath)) {
-        command += ` --config "${this.configurationManager.XamlConfigurationPath}"`;
+      if (configurationPath) {
+        command += ` --config "${configurationPath}"`;
       }
+
+      outputChannel.appendLine(`Running command: ${command}`);
 
       // Run the command using child_process
       exec(command, (error, stdout, stderr) => {
