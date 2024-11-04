@@ -7,6 +7,7 @@ XAML Styler is a Visual Studio Code extension that formats AXAML/XAML files. It 
 ## Features
 
 - Format AXAML/XAML files
+- Provides schema for Settings.XamlStyler files
 
 ## Requirements
 
