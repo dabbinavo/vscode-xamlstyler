@@ -27,5 +27,4 @@ Feel free to contribute to the following known issues:
 
 - There are no unit tests at all
 - Indendation settings of the VSCode IDE are currently not respected
-- The following extension settings are currently not implemented:
-  - `xamlstyler.configurationFile.searchToDriveRoot`
+- Missing multi-language support
