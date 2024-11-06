@@ -1,78 +1,88 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://raw.githubusercontent.com/Xavalon/XamlStyler/main/Settings.XamlStyler.schema.json",
   "type": "object",
+  "title": "",
+  "description": "",
   "properties": {
-    "IndentSize": {
-      "description": "XAML Styler (plugin only) detects and uses Visual Studio indent options by default. However, since xstyler.exe runs independently of Visual Studio, we are unable to detect those options. If you want to override the default behavior for either the plugin or xstyler.exe, you can set an extra property \"IndentSize\" in an external configuration.",
-      "type": "integer",
-      "default": 4
-    },
-    "IndentWithTabs": {
-      "description": "XAML Styler (plugin only) detects and uses Visual Studio insertTabs setting by default. However, since xstyler.exe runs independently of Visual Studio, we are unable to detect those options. If you want to override the default behavior for either the plugin or xstyler.exe, you can set an extra property \"IndentWithTabs\" in an external configuration.",
-      "type": "boolean",
-      "default": false
-    },
     "AttributesTolerance": {
       "type": "integer",
-      "default": 2
+      "default": 2,
+      "title": "Attribute Tolerance",
+      "description": "Defines the maximum number of attributes allowed on a single line. If the number of attributes exceeds this value, XAML Styler will break the attributes up across multiple lines. A value of less than 1 means always break up the attributes."
     },
     "KeepFirstAttributeOnSameLine": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Keep First Attribute On Same Line",
+      "description": "Defines whether the first line of attribute(s) should appear on the same line as the element's start tag."
     },
     "MaxAttributeCharactersPerLine": {
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "title": "Max Attribute Characters Per Line",
+      "description": "Defines the maximum character length of attributes an element can have on each line after the start tag (not including indentation characters). A value of less than 1 means no limit.\nNote: This setting only takes effect if Max Attributes Per Line is greater than 1 and Attribute Tolerance is greater than 2."
     },
     "MaxAttributesPerLine": {
       "type": "integer",
-      "default": 1
+      "default": 1,
+      "title": "Max Attributes Per Line",
+      "description": "Defines the maximum number of attributes an element can have on each line after the start tag if the number of attributes exceeds the **Attribute Tolerance**. A value of less than 1 means no limit."
     },
     "NewlineExemptionElements": {
       "type": "string",
-      "default": "RadialGradientBrush, GradientStop, LinearGradientBrush, ScaleTransform, SkewTransform, RotateTransform, TranslateTransform, Trigger, Condition, Setter"
+      "default": "RadialGradientBrush, GradientStop, LinearGradientBrush, ScaleTransform, SkewTransform, RotateTransform, TranslateTransform, Trigger, Condition, Setter",
+      "title": "Newline Exemption Elements",
+      "description": "Defines a list of elements whose attributes should not be broken across lines."
     },
     "SeparateByGroups": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Separate By Groups",
+      "description": "Defines whether attributes belonging to different rule groups should be put on separate lines, while, if possible, keeping attributes in the same group on the same line."
     },
     "AttributeIndentation": {
       "type": "integer",
-      "description": "Defines the number of spaces that attributes are indented on elements with more than one line of attributes. A value of 0 will align indentation with the first attribute.\nSee https://github.com/Xavalon/XamlStyler/wiki/Attribute-Formatting#attribute-indentation",
-      "default": 0
+      "default": 0,
+      "title": "Attribute Indentation",
+      "description": "Defines the number of spaces that attributes are indented on elements with more than one line of attributes. A value of 0 will align indentation with the first attribute."
     },
     "AttributeIndentationStyle": {
       "type": "integer",
-      "enum": [
-        {
-          "code": 0,
-          "description": "Mixed"
-        },
-        {
-          "code": 1,
-          "description": "Spaces"
-        }
-      ],
-      "default": 1
+      "default": 1,
+      "title": "Attribute Indentation Style",
+      "description": "Defines how attributes are indented. Options: Mixed (tabs, if using them, then spaces), Spaces (always use spaces).",
+        "anyOf": [
+          {
+            "const": 0,
+            "title": "Mixed"
+          },
+          {
+            "const": 1,
+            "title": "Spaces"
+          }
+        ]
     },
     "RemoveDesignTimeReferences": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Remove Design Time References",
+      "description": "Defines whether design-time references automatically added to new pages and controls should be removed."
     },
     "IgnoreDesignTimeReferencePrefix": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Ignore Design-Time Reference Prefix",
+      "description": "Defines whether attributes with the design-time reference namespace prefix are ignored when ordering."
     },
     "EnableAttributeReordering": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "title": "Enable Attribute Reordering",
+      "description": "Defines whether attributes should be reordered. If false, attributes will not be reordered in any way."
     },
     "AttributeOrderingRuleGroups": {
       "type": "array",
-      "items": {
-        "type": "string"
-      },
+      "items": { "type": "string" },
       "default": [
         "x:Class",
         "xmlns, xmlns:x",
@@ -85,131 +95,152 @@
         "PageSource, PageIndex, Offset, Color, TargetName, Property, Value, StartPoint, EndPoint",
         "mc:Ignorable, d:IsDataSource, d:LayoutOverrides, d:IsStaticText",
         "Storyboard.*, From, To, Duration"
-      ]
+      ],
+      "title": "Attribute Ordering Rule Groups",
+      "description": "Defines attribute ordering rule groups. Each string element is one group. Use ',' as a delimiter between attributes. 'DOS' wildcards are allowed. XAML Styler will order attributes in groups from top to bottom, and within groups left to right."
     },
     "FirstLineAttributes": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "First Line Attributes",
+      "description": "Defines a list of attributes which should always appear on the same line as the element's start tag. Attribute Reordering must be enabled for this setting to take effect."
     },
     "OrderAttributesByName": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "title": "Order Attributes by Name",
+      "description": "Defines whether attributes should be ordered by name if not determined by a rule."
     },
     "PutEndingBracketOnNewLine": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Put Ending Bracket On New Line",
+      "description": "Defines whether to put closing brackets on a new line."
     },
     "RemoveEndingTagOfEmptyElement": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "title": "Remove Ending Tag Of Empty Element",
+      "description": "Defines whether to remove the end tag of an empty element."
     },
     "SpaceBeforeClosingSlash": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "title": "Space Before Closing Slash In Self-Closing Element",
+      "description": "Defines whether there should be a space before the slash in ending brackets for self-closing elements."
     },
     "RootElementLineBreakRule": {
       "type": "integer",
-      "enum": [
+      "default": 0,
+      "title": "Root Element Line Breaks Between Attributes",
+      "description": "Defines whether attributes of the document root element are broken into multiple lines. Options: Default, Always, Never.",
+      "anyOf": [
         {
-          "code": 0,
-          "description": "Default"
+          "const": 0,
+          "title": "Default"
         },
         {
-          "code": 1,
-          "description": "Always"
+          "const": 1,
+          "title": "Always"
         },
         {
-          "code": 2,
-          "description": "Never"
+          "const": 2,
+          "title": "Never"
         }
-      ],
-      "default": 0
+      ]
     },
     "ReorderVSM": {
       "type": "integer",
-      "enum": [
-        {
-          "code": 0,
-          "description": "None"
-        },
-        {
-          "code": 1,
-          "description": "First"
-        },
-        {
-          "code": 2,
-          "description": "Last"
-        }
-      ],
-      "default": 2
+      "default": 2,
+      "title": "Reorder Visual State Manager",
+      "description": "Defines whether to reorder the visual state manager. When set to first or last, the visual state manager will be moved to the first or last child element in its parent, respectively, otherwise it will not be moved. Options: None (leave as is), First, Last."
     },
     "ReorderGridChildren": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Reorder Grid Panel Children",
+      "description": "Defines whether to reorder the children of a Grid by row/column. When true, children will be reordered in an ascending fashion by looking first at Grid.Row, then by Grid.Column."
     },
     "ReorderCanvasChildren": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Reorder Canvas Panel Children",
+      "description": "Defines whether to reorder the children of a Canvas by left/top/right/bottom. When true, children will be reordered in an ascending fashion by first at Canvas.Left, then by Canvas.Top, Canvas.Right, and finally, Canvas.Bottom."
     },
     "ReorderSetters": {
       "type": "integer",
-      "enum": [
+      "default": 0,
+      "title": "Reorder Setters",
+      "description": "Reorder Setters by",
+      "anyOf": [
         {
-          "code": 0,
-          "description": "None"
+          "const": 0,
+          "title": "None"
         },
         {
-          "code": 1,
-          "description": "Property"
+          "const": 1,
+          "title": "Property"
         },
         {
-          "code": 2,
-          "description": "TargetName"
+          "const": 2,
+          "title": "TargetName"
         },
         {
-          "code": 3,
-          "description": "TargetNameThenProperty"
+          "const": 3,
+          "title": "TargetNameThenProperty"
         }
-      ],
-      "default": 0
+      ]
     },
     "FormatMarkupExtension": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "title": "Enable Markup Extension Formatting",
+      "description": "Defines whether to format Markup Extensions (attributes containing '{}'). When true, attributes with markup extensions will always be put on a new line, unless the element is under the attribute tolerance or one of the specified elements is in the list of elements with no line breaks between attributes."
     },
     "NoNewLineMarkupExtensions": {
       "type": "string",
-      "default": "x:Bind, Binding"
+      "default": "x:Bind, Binding",
+      "title": "Markup Extensions to Keep on One Line",
+      "description": "Keep Markup Extensions of these types on one line"
     },
     "ThicknessSeparator": {
       "type": "integer",
-      "enum": [
+      "default": 2,
+      "title": "Thickness Separator Style",
+      "description": "Defines how thickness attributes (i.e., margin, padding, etc.) should be formatted. Options: None (leave as is), Space, Comma.",
+      "anyOf": [
         {
-          "code": 0,
-          "description": "None"
+          "const": 0,
+          "title": "None"
         },
         {
-          "code": 1,
-          "description": "Space"
+          "const": 1,
+          "title": "Space"
         },
         {
-          "code": 2,
-          "description": "Comma"
+          "const": 2,
+          "title": "Comma"
         }
-      ],
-      "default": 2
+      ]
     },
     "ThicknessAttributes": {
       "type": "string",
-      "default": "Margin, Padding, BorderThickness, ThumbnailClipMargin"
+      "default": "Margin, Padding, BorderThickness, ThumbnailClipMargin",
+      "title": "",
+      "description": ""
     },
     "FormatOnSave": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "title": "Format On Save",
+      "description": "Defines whether to format the XAML document when saving."
     },
     "CommentPadding": {
       "type": "integer",
-      "default": 2
+      "default": 2,
+      "title": "Comment Padding",
+      "description": "Determines the number of spaces a XAML single-line comment should be padded with."
     }
-  }
+  },
+  "additionalProperties": true
 }

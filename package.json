@@ -38,7 +38,9 @@
     ],
     "jsonValidation": [
       {
-        "fileMatch": "Settings.XamlStyler",
+        "fileMatch": [
+          "Settings.XamlStyler"
+        ],
         "url": "./schemas/json/Settings.XamlStyler.schema.json"
       }
     ],
