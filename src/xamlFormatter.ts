@@ -7,6 +7,7 @@ import { exec } from "child_process";
 import { XamlConfigurationManager } from "./xamlConfigurationManager";
 import { outputChannel } from "./common";
 import { getXamlStylerConfig } from "./config";
+import { XamlConfigurationResolver } from "./xamlConfigurationResolver";
 
 export class XamlFormatter {
   private _disposable: vscode.Disposable | undefined;
@@ -80,7 +81,10 @@ class Formatter {
 
         fs.writeFileSync(filename, text);
 
-        const configurationPath = this.resolveConfigurationPath(
+        var configurationResolver = new XamlConfigurationResolver(
+          this.configurationManager.XamlConfigurationPath
+        );
+        const configurationPath = configurationResolver.resolveConfiguration(
           document.uri
         );
 
@@ -99,71 +103,6 @@ class Formatter {
         reject(e);
       }
     });
-  }
-
-  private resolveConfigurationPath(
-    documentPath: vscode.Uri
-  ): string | undefined {
-    const externalConfigurationFile = getXamlStylerConfig()
-      .get<string>("configurationFile.external")
-      ?.trim();
-
-    if (externalConfigurationFile && externalConfigurationFile !== "") {
-      if (externalConfigurationFile.startsWith("${workspaceFolder")) {
-        return this.resolveWorkspaceFolder(
-          externalConfigurationFile,
-          documentPath
-        );
-      } else if (fs.existsSync(externalConfigurationFile)) {
-        return externalConfigurationFile;
-      }
-    }
-
-    let configPath = this.configurationManager.XamlConfigurationPath;
-    if (configPath && fs.existsSync(configPath)) {
-      return configPath;
-    }
-    return undefined;
-  }
-
-  private resolveWorkspaceFolder(
-    configFilePath: string,
-    resourceUri: vscode.Uri | undefined
-  ): string {
-    const workspaceFolderMatch = configFilePath.match(
-      /\$\{workspaceFolder(?:\:([^}]+))?\}/
-    );
-
-    if (workspaceFolderMatch) {
-      const specifiedFolderName = workspaceFolderMatch[1];
-
-      let targetWorkspaceFolder: vscode.WorkspaceFolder | undefined;
-      if (specifiedFolderName) {
-        // Find the workspace folder with the specific name
-        targetWorkspaceFolder = vscode.workspace.workspaceFolders?.find(
-          (folder) => folder.name === specifiedFolderName
-        );
-      } else if (resourceUri) {
-        // If no specific name, use the folder associated with the resourceUri
-        targetWorkspaceFolder =
-          vscode.workspace.getWorkspaceFolder(resourceUri);
-      }
-
-      // Default to the first workspace folder if none matched by name or URI
-      if (!targetWorkspaceFolder && vscode.workspace.workspaceFolders) {
-        targetWorkspaceFolder = vscode.workspace.workspaceFolders[0];
-      }
-
-      // Replace the matched `${workspaceFolder}` (or `${workspaceFolder:<name>}`) with the path
-      if (targetWorkspaceFolder) {
-        configFilePath = configFilePath.replace(
-          workspaceFolderMatch[0],
-          targetWorkspaceFolder.uri.fsPath
-        );
-      }
-    }
-
-    return configFilePath;
   }
 
   private runXStyler(
