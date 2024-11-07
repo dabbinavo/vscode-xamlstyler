@@ -46,9 +46,10 @@ class XamlDocumentFormattingEditProvider
   }
 
   provideDocumentFormattingEdits(
-    document: vscode.TextDocument
+    document: vscode.TextDocument,
+    options: vscode.FormattingOptions
   ): vscode.ProviderResult<vscode.TextEdit[]> {
-    return this.formatter.formatDocument(document);
+    return this.formatter.formatDocument(document, options);
   }
 }
 
@@ -60,7 +61,8 @@ class Formatter {
   }
 
   public formatDocument(
-    document: vscode.TextDocument
+    document: vscode.TextDocument,
+    options: vscode.FormattingOptions
   ): Thenable<vscode.TextEdit[]> {
     return new Promise((resolve, reject) => {
       const firstLine = document.lineAt(0);
@@ -74,7 +76,7 @@ class Formatter {
         const tempDir = os.tmpdir();
         const filename = path.join(
           tempDir,
-          `xamlstyler-${randomBytes(16).toString("hex")}.${extension}`
+          `xamlstyler-${randomBytes(16).toString("hex")}${extension}`
         );
 
         fs.mkdirSync(path.dirname(filename), { recursive: true });
@@ -89,16 +91,19 @@ class Formatter {
         );
 
         // process the text with an external tool
-        this.runXStyler(filename, configurationPath).then((formattedText) => {
-          // remove the temporary file
-          fs.unlinkSync(filename);
-          resolve([
-            vscode.TextEdit.replace(
-              new vscode.Range(firstLine.range.start, lastLine.range.end),
-              formattedText
-            ),
-          ]);
-        }, reject);
+        this.runXStyler(filename, configurationPath, options).then(
+          (formattedText) => {
+            // remove the temporary file
+            fs.unlinkSync(filename);
+            resolve([
+              vscode.TextEdit.replace(
+                new vscode.Range(firstLine.range.start, lastLine.range.end),
+                formattedText
+              ),
+            ]);
+          },
+          reject
+        );
       } catch (e) {
         reject(e);
       }
@@ -107,15 +112,25 @@ class Formatter {
 
   private runXStyler(
     filePath: string,
-    configurationPath: string | undefined
+    configurationPath: string | undefined,
+    options: vscode.FormattingOptions,
   ): Thenable<string> {
     return new Promise((resolve, reject) => {
       // Construct the xstyler command with necessary parameters
-      let command = `xstyler --roll-forward Major --file "${filePath}" --write-to-stdout --ignore`;
+      const executable = `xstyler`;
+
+      const parameters : string[] = [];
+      parameters.push('--roll-forward', 'Major');
+      parameters.push('--file', filePath);
+      parameters.push('--write-to-stdout');
+      parameters.push('--indent-size', options.tabSize.toString());
+      parameters.push('--indent-tabs', (!options.insertSpaces).toString());
 
       if (configurationPath) {
-        command += ` --config "${configurationPath}"`;
+        parameters.push('--config', configurationPath);
       }
+
+      const command = `${executable} ${parameters.join(" ")}`;
 
       outputChannel.appendLine(`Running command: ${command}`);
 

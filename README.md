@@ -26,5 +26,4 @@ This setting supports the `${workspaceFolder}` variable.
 Feel free to contribute to the following known issues:
 
 - There are no unit tests at all
-- Indendation settings of the VSCode IDE are currently not respected
 - Missing multi-language support
