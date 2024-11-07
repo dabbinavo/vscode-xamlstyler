@@ -4,10 +4,14 @@ All notable changes to the "xamlstyler" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [0.0.6]
 
 ### Added
 - Respect indentation options of VSCode IDE
+
+### Fixed
+- Specify language `json` for `Settings.XamlStyler` files
+- Allow trailing commas for `Settings.XamlStyler` files
 
 ## [0.0.5]
 

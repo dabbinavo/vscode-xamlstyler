@@ -15,7 +15,10 @@
 			"fileMatch": [
 				"Settings.XamlStyler"
 			],
+			"schema": {
+				"allowTrailingCommas": true,
+			},
 			"url": "./schemas/json/Settings.XamlStyler.schema.json"
 		}
-	]
+	],
 }
