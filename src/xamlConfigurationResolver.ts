@@ -4,13 +4,7 @@ import * as fs from "fs";
 import { resolve } from "path";
 
 export class XamlConfigurationResolver {
-  private generatedConfiguration: string | undefined;
-
-  constructor(generatedConfiguration: string | undefined) {
-    this.generatedConfiguration = generatedConfiguration;
-  }
-
-  public resolveConfiguration(documentPath: vscode.Uri) {
+  public resolveConfiguration(documentPath: vscode.Uri): string | undefined {
     let externalConfigurationFile =
       this.resolveExternalConfigurationFile(documentPath);
     if (externalConfigurationFile && fs.existsSync(externalConfigurationFile)) {
@@ -22,12 +16,7 @@ export class XamlConfigurationResolver {
       return configurationCandidate;
     }
 
-    if (
-      this.generatedConfiguration &&
-      fs.existsSync(this.generatedConfiguration)
-    ) {
-      return this.generatedConfiguration;
-    }
+    return undefined;
   }
 
   private resolveExternalConfigurationFile(
@@ -118,7 +107,7 @@ export class XamlConfigurationResolver {
       if (foundSolution && !searchToRoot) {
         break;
       }
-      
+
       if (foundSolution && configurationCandidate) {
         break;
       }

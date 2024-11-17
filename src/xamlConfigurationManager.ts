@@ -1,9 +1,5 @@
-import { XamlFormatter } from "./xamlFormatter";
-import * as fs from "fs";
-import * as path from "path";
-import { randomBytes } from "crypto";
-import * as os from "os";
 import { getXamlStylerConfig } from "./config";
+import * as vscode from "vscode";
 
 enum JsonConfigMember {
   AttributesTolerance,
@@ -36,136 +32,149 @@ enum JsonConfigMember {
 }
 
 export class XamlConfigurationManager {
-  public XamlConfigurationPath: string | undefined;
-
-  public updateConfig(): void {
-    const jsonConfig = this.createJsonConfig();
-
-    const tempDir = os.tmpdir();
-    const xamlConfigurationPath = path.join(
-      tempDir,
-      `xamlstyler-${randomBytes(16).toString("hex")}.XamlSettings`
-    );
-
-    fs.mkdirSync(path.dirname(xamlConfigurationPath), { recursive: true });
-
-    fs.writeFileSync(xamlConfigurationPath, jsonConfig);
-
-    if (this.XamlConfigurationPath) {
-      let oldPath = this.XamlConfigurationPath;
-      this.XamlConfigurationPath = xamlConfigurationPath;
-      fs.unlinkSync(oldPath);
-    } else {
-      this.XamlConfigurationPath = xamlConfigurationPath;
-    }
-  }
-
-  private createJsonConfig(): string {
+  public static createJsonConfig(
+    options: vscode.FormattingOptions,
+    uri?: vscode.Uri
+  ): string {
     const jsonData = {
-      AttributesTolerance: this.resolveConfig<number>(
-        JsonConfigMember.AttributesTolerance
+      IndentSize: options.tabSize,
+      IndentWithTabs: !options.insertSpaces,
+      AttributesTolerance: XamlConfigurationManager.resolveConfig<number>(
+        JsonConfigMember.AttributesTolerance,
+        uri
       ),
-      KeepFirstAttributeOnSameLine: this.resolveConfig<boolean>(
-        JsonConfigMember.KeepFirstAttributeOnSameLine
+      KeepFirstAttributeOnSameLine:
+        XamlConfigurationManager.resolveConfig<boolean>(
+          JsonConfigMember.KeepFirstAttributeOnSameLine,
+          uri
+        ),
+      MaxAttributeCharactersPerLine:
+        XamlConfigurationManager.resolveConfig<number>(
+          JsonConfigMember.MaxAttributeCharactersPerLine,
+          uri
+        ),
+      MaxAttributesPerLine: XamlConfigurationManager.resolveConfig<number>(
+        JsonConfigMember.MaxAttributesPerLine,
+        uri
       ),
-      MaxAttributeCharactersPerLine: this.resolveConfig<number>(
-        JsonConfigMember.MaxAttributeCharactersPerLine
+      NewlineExemptionElements: XamlConfigurationManager.resolveConfig<
+        string[]
+      >(JsonConfigMember.NewlineExemptionElements, uri).join(", "),
+      SeparateByGroups: XamlConfigurationManager.resolveConfig<boolean>(
+        JsonConfigMember.SeparateByGroups,
+        uri
       ),
-      MaxAttributesPerLine: this.resolveConfig<number>(
-        JsonConfigMember.MaxAttributesPerLine
+      AttributeIndentation: XamlConfigurationManager.resolveConfig<number>(
+        JsonConfigMember.AttributeIndentation,
+        uri
       ),
-      NewlineExemptionElements: this.resolveConfig<string[]>(
-        JsonConfigMember.NewlineExemptionElements
-      ).join(", "),
-      SeparateByGroups: this.resolveConfig<boolean>(
-        JsonConfigMember.SeparateByGroups
-      ),
-      AttributeIndentation: this.resolveConfig<number>(
-        JsonConfigMember.AttributeIndentation
-      ),
-      AttributeIndentationStyle: this.resolveEnumConfig(
+      AttributeIndentationStyle: XamlConfigurationManager.resolveEnumConfig(
         JsonConfigMember.AttributeIndentationStyle,
-        ["Mixed", "Spaces"]
+        ["Mixed", "Spaces"],
+        uri
       ),
-      RemoveDesignTimeReferences: this.resolveConfig<boolean>(
-        JsonConfigMember.RemoveDesignTimeReferences
-      ),
-      IgnoreDesignTimeReferencePrefix: this.resolveConfig<boolean>(
-        JsonConfigMember.IgnoreDesignTimeReferencePrefix
-      ),
-      EnableAttributeReordering: this.resolveConfig<boolean>(
-        JsonConfigMember.EnableAttributeReordering
-      ),
-      AttributeOrderingRuleGroups: this.resolveConfig<string[]>(
-        JsonConfigMember.AttributeOrderingRuleGroups
-      ),
-      FirstLineAttributes: this.resolveConfig<string[]>(
-        JsonConfigMember.FirstLineAttributes
+      RemoveDesignTimeReferences:
+        XamlConfigurationManager.resolveConfig<boolean>(
+          JsonConfigMember.RemoveDesignTimeReferences,
+          uri
+        ),
+      IgnoreDesignTimeReferencePrefix:
+        XamlConfigurationManager.resolveConfig<boolean>(
+          JsonConfigMember.IgnoreDesignTimeReferencePrefix,
+          uri
+        ),
+      EnableAttributeReordering:
+        XamlConfigurationManager.resolveConfig<boolean>(
+          JsonConfigMember.EnableAttributeReordering,
+          uri
+        ),
+      AttributeOrderingRuleGroups: XamlConfigurationManager.resolveConfig<
+        string[]
+      >(JsonConfigMember.AttributeOrderingRuleGroups, uri),
+      FirstLineAttributes: XamlConfigurationManager.resolveConfig<string[]>(
+        JsonConfigMember.FirstLineAttributes,
+        uri
       ).join(", "),
-      OrderAttributesByName: this.resolveConfig<boolean>(
-        JsonConfigMember.OrderAttributesByName
+      OrderAttributesByName: XamlConfigurationManager.resolveConfig<boolean>(
+        JsonConfigMember.OrderAttributesByName,
+        uri
       ),
-      PutEndingBracketOnNewLine: this.resolveConfig<boolean>(
-        JsonConfigMember.PutEndingBracketOnNewLine
+      PutEndingBracketOnNewLine:
+        XamlConfigurationManager.resolveConfig<boolean>(
+          JsonConfigMember.PutEndingBracketOnNewLine,
+          uri
+        ),
+      RemoveEndingTagOfEmptyElement:
+        XamlConfigurationManager.resolveConfig<boolean>(
+          JsonConfigMember.RemoveEndingTagOfEmptyElement,
+          uri
+        ),
+      SpaceBeforeClosingSlash: XamlConfigurationManager.resolveConfig<boolean>(
+        JsonConfigMember.SpaceBeforeClosingSlash,
+        uri
       ),
-      RemoveEndingTagOfEmptyElement: this.resolveConfig<boolean>(
-        JsonConfigMember.RemoveEndingTagOfEmptyElement
-      ),
-      SpaceBeforeClosingSlash: this.resolveConfig<boolean>(
-        JsonConfigMember.SpaceBeforeClosingSlash
-      ),
-      RootElementLineBreakRule: this.resolveEnumConfig(
+      RootElementLineBreakRule: XamlConfigurationManager.resolveEnumConfig(
         JsonConfigMember.RootElementLineBreakRule,
-        ["Default", "Always", "Never"]
+        ["Default", "Always", "Never"],
+        uri
       ),
-      ReorderVSM: this.resolveEnumConfig(JsonConfigMember.ReorderVSM, [
-        "None",
-        "First",
-        "Last",
-      ]),
-      ReorderGridChildren: this.resolveConfig<boolean>(
-        JsonConfigMember.ReorderGridChildren
+      ReorderVSM: XamlConfigurationManager.resolveEnumConfig(
+        JsonConfigMember.ReorderVSM,
+        ["None", "First", "Last"],
+        uri
       ),
-      ReorderCanvasChildren: this.resolveConfig<boolean>(
-        JsonConfigMember.ReorderCanvasChildren
+      ReorderGridChildren: XamlConfigurationManager.resolveConfig<boolean>(
+        JsonConfigMember.ReorderGridChildren,
+        uri
       ),
-      ReorderSetters: this.resolveEnumConfig(JsonConfigMember.ReorderSetters, [
-        "None",
-        "Property",
-        "TargetName",
-        "TargetNameThenProperty",
-      ]),
-      FormatMarkupExtension: this.resolveConfig<boolean>(
-        JsonConfigMember.FormatMarkupExtension
+      ReorderCanvasChildren: XamlConfigurationManager.resolveConfig<boolean>(
+        JsonConfigMember.ReorderCanvasChildren,
+        uri
       ),
-      NoNewLineMarkupExtensions: this.resolveConfig<string[]>(
-        JsonConfigMember.NoNewLineMarkupExtensions
-      ).join(", "),
-      ThicknessSeparator: this.resolveEnumConfig(
+      ReorderSetters: XamlConfigurationManager.resolveEnumConfig(
+        JsonConfigMember.ReorderSetters,
+        ["None", "Property", "TargetName", "TargetNameThenProperty"],
+        uri
+      ),
+      FormatMarkupExtension: XamlConfigurationManager.resolveConfig<boolean>(
+        JsonConfigMember.FormatMarkupExtension,
+        uri
+      ),
+      NoNewLineMarkupExtensions: XamlConfigurationManager.resolveConfig<
+        string[]
+      >(JsonConfigMember.NoNewLineMarkupExtensions, uri).join(", "),
+      ThicknessSeparator: XamlConfigurationManager.resolveEnumConfig(
         JsonConfigMember.ThicknessSeparator,
-        ["None", "Space", "Comma"]
+        ["None", "Space", "Comma"],
+        uri
       ),
-      ThicknessAttributes: this.resolveConfig<string[]>(
-        JsonConfigMember.ThicknessAttributes
+      ThicknessAttributes: XamlConfigurationManager.resolveConfig<string[]>(
+        JsonConfigMember.ThicknessAttributes,
+        uri
       ).join(", "),
-      CommentPadding: this.resolveConfig<number>(
-        JsonConfigMember.CommentPadding
+      CommentPadding: XamlConfigurationManager.resolveConfig<number>(
+        JsonConfigMember.CommentPadding,
+        uri
       ),
     };
     return JSON.stringify(jsonData);
   }
 
-  private resolveConfig<T>(member: JsonConfigMember): T {
-    return getXamlStylerConfig().get<T>(
+  private static resolveConfig<T>(
+    member: JsonConfigMember,
+    uri?: vscode.Uri
+  ): T {
+    return getXamlStylerConfig(uri).get<T>(
       XamlConfigurationManager.configurationMap.get(member)!
     )!;
   }
 
-  private resolveEnumConfig(
+  private static resolveEnumConfig(
     member: JsonConfigMember,
-    map: string[]
+    map: string[],
+    uri?: vscode.Uri
   ): number | undefined {
-    var enumValue = getXamlStylerConfig().get<string>(
+    var enumValue = getXamlStylerConfig(uri).get<string>(
       XamlConfigurationManager.configurationMap.get(member)!
     )!;
     var index = map.indexOf(enumValue);
@@ -173,12 +182,6 @@ export class XamlConfigurationManager {
       return undefined;
     }
     return index;
-  }
-
-  dispose(): void {
-    if (this.XamlConfigurationPath) {
-      fs.unlinkSync(this.XamlConfigurationPath);
-    }
   }
 
   public static configurationMap: Map<JsonConfigMember, string> = new Map<

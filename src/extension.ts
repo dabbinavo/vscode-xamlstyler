@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import { DependencyChecker } from "./dependencyChecker";
 import { XamlFormatter } from "./xamlFormatter";
 import { SettingObserver } from "./settingObserver";
-import { XamlConfigurationManager } from "./xamlConfigurationManager";
 
 // This method is called when your extension is activated
 export async function activate(context: vscode.ExtensionContext) {
@@ -16,16 +15,13 @@ export async function activate(context: vscode.ExtensionContext) {
     return;
   }
 
-  const xamlConfigurationManager = new XamlConfigurationManager();
-  const xamlFormatter = new XamlFormatter(xamlConfigurationManager);
+  const xamlFormatter = new XamlFormatter();
   const settingsObserver = new SettingObserver(
     context,
-    xamlFormatter,
-    xamlConfigurationManager
+    xamlFormatter
   );
 
   context.subscriptions.push(xamlFormatter);
-  context.subscriptions.push(xamlConfigurationManager);
   context.subscriptions.push(settingsObserver);
 }
 
