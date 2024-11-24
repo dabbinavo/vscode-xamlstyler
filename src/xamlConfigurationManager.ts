@@ -33,12 +33,9 @@ enum JsonConfigMember {
 
 export class XamlConfigurationManager {
   public static createJsonConfig(
-    options: vscode.FormattingOptions,
     uri?: vscode.Uri
   ): string {
     const jsonData = {
-      IndentSize: options.tabSize,
-      IndentWithTabs: !options.insertSpaces,
       AttributesTolerance: XamlConfigurationManager.resolveConfig<number>(
         JsonConfigMember.AttributesTolerance,
         uri

@@ -80,14 +80,13 @@ class Formatter {
         if (!configurationPath) {
           configurationPath = this.createJsonConfigFromVsCodeSettings(
             document.uri,
-            options,
             `${tempBaseName}.Settings.XamlStyler`
           );
           filesToDelete.push(configurationPath);
         }
 
         // process the text with an external tool
-        this.runXStyler(filename, configurationPath).then((formattedText) => {
+        this.runXStyler(filename, configurationPath, options).then((formattedText) => {
           filesToDelete.forEach((file) => {
             fs.unlinkSync(file);
           });
@@ -109,11 +108,9 @@ class Formatter {
 
   private createJsonConfigFromVsCodeSettings(
     documentPath: vscode.Uri,
-    options: vscode.FormattingOptions,
     outputPath: string
   ): string {
     let jsonString = XamlConfigurationManager.createJsonConfig(
-      options,
       documentPath
     );
     fs.writeFileSync(outputPath!, jsonString);
@@ -122,7 +119,8 @@ class Formatter {
 
   private runXStyler(
     filePath: string,
-    configurationPath: string
+    configurationPath: string,
+    options: vscode.FormattingOptions
   ): Thenable<string> {
     return new Promise((resolve, reject) => {
       // Construct the xstyler command with necessary parameters
@@ -133,6 +131,8 @@ class Formatter {
       parameters.push("--file", filePath);
       parameters.push("--write-to-stdout");
       parameters.push("--config", configurationPath);
+      parameters.push("--indent-size", options.tabSize.toString());
+      parameters.push("--indent-tabs", options.insertSpaces ? "false" : "true");
 
       const command = `${executable} ${parameters.join(" ")}`;
 
