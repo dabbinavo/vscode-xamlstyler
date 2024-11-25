@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<root>
-  <element attribute1="value1" attribute2="value2">
-    <childElement attribute="value">Text content</childElement>
-  </element>
-</root>

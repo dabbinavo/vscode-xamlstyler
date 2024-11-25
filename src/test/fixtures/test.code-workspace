@@ -1,6 +1,10 @@
 {
    "folders": [
       {
+         "name": "FormatTests",
+         "path": "FormatTests"
+      },
+      {
          "path": "."
       }
    ],
