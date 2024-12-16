@@ -64,7 +64,7 @@
           "xamlstyler.attributes.formatting.indentation": {
             "title": "Attribute Indentation",
             "description": "Defines the number of spaces that attributes are indented on elements with more than one line of attributes. A value of 0 will align indentation with the first attribute.",
-            "scope": "application",
+            "scope": "resource",
             "type": "number",
             "minimum": -1,
             "default": 0,
