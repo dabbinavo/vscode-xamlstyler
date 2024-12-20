@@ -42,10 +42,6 @@ jobs:
             npx vsce publish
           fi
 
-      - name: Create tag
-        if: success()
-        run: git tag v${{ steps.get_version.outputs.VERSION }} && git push origin v${{ steps.get_version.outputs.VERSION }}
-
       - name: Create GitHub release
         if: success()
         uses: actions/create-release@v1

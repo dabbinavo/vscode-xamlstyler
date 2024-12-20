@@ -4,6 +4,15 @@ All notable changes to the "xamlstyler" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.8]
+- Fix github workflow for publishing the extension
+
+## [0.0.7]
+### Fixed
+- Changed scope of configuration `xamlstyler.attributes.formatting.indentation` to resource
+- Always pass indent options to xamlstyler tool
+- Correctly handle multi-root workspace configurations
+
 ## [0.0.6]
 
 ### Added
