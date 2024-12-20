@@ -11,6 +11,7 @@ on:
 
 jobs:
   release:
+    permissions: write-all
     runs-on: ubuntu-latest
 
     steps:
@@ -44,7 +45,7 @@ jobs:
 
       - name: Create GitHub release
         if: success()
-        uses: actions/create-release@v1
+        uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
