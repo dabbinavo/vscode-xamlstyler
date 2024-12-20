@@ -1,9 +1,12 @@
 name: Release VSCode Extension
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Is this a prerelease version?'
+        required: true
+        default: 'false'
 
 jobs:
   release:
@@ -21,10 +24,33 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Extract version from package.json
+        id: get_version
+        run: echo "::set-output name=VERSION::$(node -p -e "require('./package.json').version")"
+
       - name: Package VSCode Extension
         run: npx vsce package
 
       - name: Publish VSCode Extension
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-        run: npx vsce publish
+        run: |
+          if [ "${{ github.event.inputs.prerelease }}" == "true" ]; then
+            npx vsce publish --pre-release
+          else
+            npx vsce publish
+          fi
+
+      - name: Create tag
+        if: success()
+        run: git tag v${{ steps.get_version.outputs.VERSION }} && git push origin v${{ steps.get_version.outputs.VERSION }}
+
+      - name: Create GitHub release
+        if: success()
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          prerelease: ${{ github.event.inputs.prerelease }}
