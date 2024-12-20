@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       prerelease:
-        description: 'Is this a prerelease version?'
+        description: 'Publish as prerelease version'
         required: true
         type: boolean
         default: false
