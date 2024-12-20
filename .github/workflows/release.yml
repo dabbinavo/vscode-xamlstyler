@@ -38,9 +38,9 @@ jobs:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
           if [ ${{ inputs.prerelease }} ]; then
-            npx vsce publish --pre-release
+            echo "npx vsce publish --pre-release"
           else
-            npx vsce publish
+            echo "npx vsce publish"
           fi
 
       - name: Create GitHub release
