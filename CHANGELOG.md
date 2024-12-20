@@ -4,7 +4,12 @@ All notable changes to the "xamlstyler" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.9]
+### Fixed
+- Now hopefully really fix publishing via github workflow
+
 ## [0.0.8]
+### Fixed
 - Fix github workflow for publishing the extension
 
 ## [0.0.7]
