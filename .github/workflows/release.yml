@@ -33,7 +33,7 @@ jobs:
 
       - name: Remove unnecessary files
         run: find ./tools/xstyler -type f \( -name '*.pdb' -o -name '*.exe' -o -name '*.deps.json' \) -delete
-      
+
       - name: Extract version from package.json
         id: get_version
         run: echo "::set-output name=VERSION::$(node -p -e "require('./package.json').version")"
@@ -53,10 +53,22 @@ jobs:
 
       - name: Create GitHub release
         if: success()
-        uses: actions/create-release@latest
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
           release_name: v${{ steps.get_version.outputs.VERSION }}
           prerelease: ${{ inputs.prerelease }}
+
+      - name: Upload VSIX to GitHub release
+        if: success()
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./xamlstyler-*.vsix
+          asset_name: your-extension-name-${{ steps.get_version.outputs.VERSION }}.vsix
+          asset_content_type: application/vnd.microsoft.vscode.vsix
