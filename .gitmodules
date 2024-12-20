@@ -1,0 +1,3 @@
+[submodule "tools/XamlStyler"]
+	path = tools/XamlStyler
+	url = https://github.com/Xavalon/XamlStyler.git
