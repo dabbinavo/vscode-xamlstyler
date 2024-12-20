@@ -4,6 +4,15 @@ All notable changes to the "xamlstyler" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.0.0]
+### Changed
+- First non-pre-release of the extension
+- Add some screenshots
+
+## [0.0.10]
+### Changed
+- Include precompiled xstyler tool in order to remove dependency on XamlStyler to be installed as global tool. Additionally, .NET Runtime 6+ is sufficient now.
+
 ## [0.0.9]
 ### Fixed
 - Now hopefully really fix publishing via github workflow

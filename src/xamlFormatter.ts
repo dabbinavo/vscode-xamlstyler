@@ -5,8 +5,9 @@ import * as os from "os";
 import { randomBytes } from "crypto";
 import { exec } from "child_process";
 import { XamlConfigurationManager } from "./xamlConfigurationManager";
-import { outputChannel } from "./common";
+import { outputChannel, extensionPath } from "./common";
 import { XamlConfigurationResolver } from "./xamlConfigurationResolver";
+import { getXamlStylerConfig } from "./config";
 
 export class XamlFormatter {
   private _disposable: vscode.Disposable | undefined;
@@ -86,17 +87,20 @@ class Formatter {
         }
 
         // process the text with an external tool
-        this.runXStyler(filename, configurationPath, options).then((formattedText) => {
-          filesToDelete.forEach((file) => {
-            fs.unlinkSync(file);
-          });
-          resolve([
-            vscode.TextEdit.replace(
-              new vscode.Range(firstLine.range.start, lastLine.range.end),
-              formattedText
-            ),
-          ]);
-        }, reject);
+        this.runXStyler(filename, configurationPath, options).then(
+          (formattedText) => {
+            filesToDelete.forEach((file) => {
+              fs.unlinkSync(file);
+            });
+            resolve([
+              vscode.TextEdit.replace(
+                new vscode.Range(firstLine.range.start, lastLine.range.end),
+                formattedText
+              ),
+            ]);
+          },
+          reject
+        );
       } catch (e) {
         filesToDelete.forEach((file) => {
           fs.unlinkSync(file);
@@ -110,9 +114,7 @@ class Formatter {
     documentPath: vscode.Uri,
     outputPath: string
   ): string {
-    let jsonString = XamlConfigurationManager.createJsonConfig(
-      documentPath
-    );
+    let jsonString = XamlConfigurationManager.createJsonConfig(documentPath);
     fs.writeFileSync(outputPath!, jsonString);
     return outputPath!;
   }
@@ -123,11 +125,22 @@ class Formatter {
     options: vscode.FormattingOptions
   ): Thenable<string> {
     return new Promise((resolve, reject) => {
-      // Construct the xstyler command with necessary parameters
-      const executable = `xstyler`;
+      const useGlobalTool = getXamlStylerConfig().get<boolean>("useGlobalTool");
+      
+      const executable = useGlobalTool ? "xstyler" : "dotnet";
 
       const parameters: string[] = [];
-      parameters.push("--roll-forward", "Major");
+      if (useGlobalTool) {
+        parameters.push("--roll-forward", "Major");
+      } else {
+        const xstyler = path.join(
+          extensionPath!,
+          "tools",
+          "xstyler",
+          "xstyler.dll"
+        );
+        parameters.push(xstyler);
+      }
       parameters.push("--file", filePath);
       parameters.push("--write-to-stdout");
       parameters.push("--config", configurationPath);

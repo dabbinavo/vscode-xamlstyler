@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
@@ -25,6 +27,12 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Build XamlStyler tool
+        run: dotnet publish -p:RollForward=Major -o ./tools/xstyler ./tools/XamlStyler/src/XamlStyler.Console
+
+      - name: Remove unnecessary files
+        run: find ./tools/xstyler -type f \( -name '*.pdb' -o -name '*.exe' -o -name '*.deps.json' \) -delete
 
       - name: Extract version from package.json
         id: get_version
@@ -45,10 +53,22 @@ jobs:
 
       - name: Create GitHub release
         if: success()
-        uses: actions/create-release@latest
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
           release_name: v${{ steps.get_version.outputs.VERSION }}
           prerelease: ${{ inputs.prerelease }}
+
+      - name: Upload VSIX to GitHub release
+        if: success()
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./xamlstyler-*.vsix
+          asset_name: your-extension-name-${{ steps.get_version.outputs.VERSION }}.vsix
+          asset_content_type: application/vnd.microsoft.vscode.vsix

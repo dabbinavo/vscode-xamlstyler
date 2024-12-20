@@ -1,7 +1,7 @@
 {
   "name": "xamlstyler",
   "displayName": "XAML Styler",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "publisher": "dabbinavo",
   "description": "XAML Styler is used to format XAML source code based on a set of styling rules. This tool can help you/your team maintain a better XAML coding style as well as a much better XAML readability.",
   "author": {
@@ -55,6 +55,11 @@
             "type": "boolean",
             "default": true,
             "description": "Enable XAML Styler to format .xaml and .axaml files."
+          },
+          "xamlstyler.useGlobalTool": {
+            "type": "boolean",
+            "default": false,
+            "description": "Use the global XAML Styler tool instead of the bundled one."
           }
         }
       },

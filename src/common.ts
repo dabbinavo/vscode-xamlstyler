@@ -7,3 +7,7 @@ export const documentSelector: vscode.DocumentFilter[] = [
 ];
 
 export const outputChannel = vscode.window.createOutputChannel("XAML Formatter");
+
+export const extensionId = "dabbinavo.xamlstyler";
+
+export const extensionPath = vscode.extensions.getExtension(extensionId)?.extensionPath;
