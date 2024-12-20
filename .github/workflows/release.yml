@@ -6,7 +6,8 @@ on:
       prerelease:
         description: 'Is this a prerelease version?'
         required: true
-        default: 'false'
+        type: boolean
+        default: false
 
 jobs:
   release:
@@ -35,7 +36,7 @@ jobs:
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
-          if [ "${{ github.event.inputs.prerelease }}" == "true" ]; then
+          if [ ${{ inputs.prerelease }} ]; then
             npx vsce publish --pre-release
           else
             npx vsce publish
@@ -53,4 +54,4 @@ jobs:
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
           release_name: Release ${{ steps.get_version.outputs.VERSION }}
-          prerelease: ${{ github.event.inputs.prerelease }}
+          prerelease: ${{ inputs.prerelease }}
