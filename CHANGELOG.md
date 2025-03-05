@@ -7,6 +7,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## Added
 - Also support .axml files ([AvaloniaTeam.vscode-avalonia](https://marketplace.visualstudio.com/items?itemName=AvaloniaTeam.vscode-avalonia) does note that extension for the AXAML language)
 
+## Changed
+- Bump XamlStyler.Console tool to 3.2501.8
+
 ## [1.0.0]
 ### Changed
 - First non-pre-release of the extension
