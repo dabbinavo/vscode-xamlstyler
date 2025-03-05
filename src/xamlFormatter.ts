@@ -59,6 +59,11 @@ class Formatter {
       let extension = path.extname(document.fileName);
       let filesToDelete: fs.PathLike[] = [];
 
+      // The XAML Styler tool does not support .axml extension, so we need to convert them to .axaml
+      if (extension === ".axml") {
+        extension = ".axaml";
+      }
+
       try {
         // store the text into a temporary file of the vscode extension in order to process it with an external tool in the next step
         const tempDir = os.tmpdir();
@@ -126,7 +131,7 @@ class Formatter {
   ): Thenable<string> {
     return new Promise((resolve, reject) => {
       const useGlobalTool = getXamlStylerConfig().get<boolean>("useGlobalTool");
-      
+
       const executable = useGlobalTool ? "xstyler" : "dotnet";
 
       const parameters: string[] = [];
@@ -158,6 +163,16 @@ class Formatter {
           let traces = stderr.split("\n");
           vscode.window.showErrorMessage(traces[1]);
           reject(error);
+        }
+        // parse x of y from "Processed 0 of 1 files" using regex
+        let processedFiles = stderr.match(/Processed (\d+) of (\d+) files/);
+        if (processedFiles && processedFiles[1] !== processedFiles[2]) {
+          outputChannel.appendLine(`${stderr}`);
+          vscode.window.showErrorMessage(stderr);
+          reject(stderr);
+        }
+        else {
+          outputChannel.appendLine(stderr);
         }
         let formattedText = stdout.trim() + "\n";
         resolve(formattedText);

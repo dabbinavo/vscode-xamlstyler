@@ -2,7 +2,9 @@ import * as vscode from "vscode";
 
 export const documentSelector: vscode.DocumentFilter[] = [
   { scheme: "file", language: "AXAML", pattern: "**/*.axaml" },
+  { scheme: "file", language: "AXAML", pattern: "**/*.axml" },
   { scheme: "file", language: "xml", pattern: "**/*.axaml" },
+  { scheme: "file", language: "xml", pattern: "**/*.axml" },
   { scheme: "file", language: "xml", pattern: "**/*.xaml" },
 ];
 
