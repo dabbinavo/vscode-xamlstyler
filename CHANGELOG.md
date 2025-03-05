@@ -1,8 +1,11 @@
 # Change Log
 
 All notable changes to the "xamlstyler" extension will be documented in this file.
-
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+
+## [1.1.0]
+## Added
+- Also support .axml files ([AvaloniaTeam.vscode-avalonia](https://marketplace.visualstudio.com/items?itemName=AvaloniaTeam.vscode-avalonia) does note that extension for the AXAML language)
 
 ## [1.0.0]
 ### Changed
