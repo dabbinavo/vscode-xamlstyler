@@ -164,17 +164,26 @@ class Formatter {
           vscode.window.showErrorMessage(traces[1]);
           reject(error);
         }
-        // parse x of y from "Processed 0 of 1 files" using regex
-        let processedFiles = stderr.match(/Processed (\d+) of (\d+) files/);
-        if (processedFiles && processedFiles[1] !== processedFiles[2]) {
+        if (stdout.trim() === "") {
           outputChannel.appendLine(`${stderr}`);
           vscode.window.showErrorMessage(stderr);
           reject(stderr);
-        }
-        else {
+        } else {
           outputChannel.appendLine(stderr);
         }
-        let formattedText = stdout.trim() + "\n";
+        const whiteSpaceBehaviour = getXamlStylerConfig().get<string>(
+          "miscellaneous.fileWhiteSpaceBehavior"
+        );
+        // Remove BOM if present
+        if (stdout.charCodeAt(0) === 0xfeff) {
+          stdout = stdout.slice(1);
+        }
+        let formattedText = stdout;
+        if (whiteSpaceBehaviour === "TrimTrailingAddNewline") {
+          formattedText = stdout.trim() + "\n";
+        } else if (whiteSpaceBehaviour === "TrimTrailingNoNewline") {
+          formattedText = stdout.trim();
+        }
         resolve(formattedText);
       });
     });
