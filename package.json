@@ -1,7 +1,7 @@
 {
   "name": "xamlstyler",
   "displayName": "XAML Styler",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "dabbinavo",
   "description": "XAML Styler is used to format XAML source code based on a set of styling rules. This tool can help you/your team maintain a better XAML coding style as well as a much better XAML readability.",
   "author": {
@@ -350,6 +350,24 @@
             "type": "number",
             "default": 2,
             "order": 0
+          },
+          "xamlstyler.miscellaneous.fileWhiteSpaceBehavior": {
+            "title": "File Whitespace Behavior",
+            "description": "Determines how leading and trailing whitespaces are handled in the file.",
+            "scope": "resource",
+            "type": "string",
+            "enum": [
+              "TrimTrailingAddNewline",
+              "TrimTrailingNoNewline",
+              "XStylerConsoleBehavior"
+            ],
+            "enumDescriptions": [
+              "Trim trailing whitespace and add a newline at the end of the file. (Recommended)",
+              "Trim trailing whitespace and do not add a newline at the end of the file.",
+              "Keep the behavior of the xstyler dotnet tool."
+            ],
+            "default": "TrimTrailingAddNewline",
+            "order": 3
           }
         }
       },
