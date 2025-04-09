@@ -3,15 +3,19 @@
 All notable changes to the "xamlstyler" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.3.0]
+### Added
+- Enable the extension for the `xaml` language and register the formatter accordingly, supporting tools such as [NoesisGUI XAML Tools](https://marketplace.visualstudio.com/items?itemName=NoesisTechnologies.noesisgui-tools).
+
 ## [1.2.0]
-## Added
+### Added
 - Add option to define how to handle leading and trailing whitespaces in a file (`xamlstyler.miscellaneous.fileWhiteSpaceBehavior`). See [#8](https://github.com/dabbinavo/vscode-xamlstyler/issues/8)
 
 ## [1.1.0]
-## Added
+### Added
 - Also support .axml files ([AvaloniaTeam.vscode-avalonia](https://marketplace.visualstudio.com/items?itemName=AvaloniaTeam.vscode-avalonia) does note that extension for the AXAML language)
 
-## Changed
+### Changed
 - Bump XamlStyler.Console tool to 3.2501.8
 
 ## [1.0.0]
