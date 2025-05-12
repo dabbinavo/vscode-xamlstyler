@@ -3,6 +3,10 @@
 All notable changes to the "xamlstyler" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.3.1]
+### Fixed
+- Support spaces in external config file paths (#12)
+
 ## [1.3.0]
 ### Added
 - Enable the extension for the `xaml` language and register the formatter accordingly, supporting tools such as [NoesisGUI XAML Tools](https://marketplace.visualstudio.com/items?itemName=NoesisTechnologies.noesisgui-tools).

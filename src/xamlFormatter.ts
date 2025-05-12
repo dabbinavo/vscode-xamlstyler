@@ -146,9 +146,9 @@ class Formatter {
         );
         parameters.push(xstyler);
       }
-      parameters.push("--file", filePath);
+      parameters.push("--file", `"${filePath}"`);
       parameters.push("--write-to-stdout");
-      parameters.push("--config", configurationPath);
+      parameters.push("--config", `"${configurationPath}"`);
       parameters.push("--indent-size", options.tabSize.toString());
       parameters.push("--indent-tabs", options.insertSpaces ? "false" : "true");
 
