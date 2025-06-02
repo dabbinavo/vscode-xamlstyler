@@ -98,7 +98,7 @@ export class XamlConfigurationResolver {
       if (!foundSolution) {
         let solutionFilePaths = fs
           .readdirSync(currentDirectory)
-          .filter((fn) => fn.endsWith(".sln"));
+          .filter((fn) => fn.endsWith(".sln") || fn.endsWith(".slnx"));
         if (solutionFilePaths.length > 0) {
           foundSolution = true;
         }

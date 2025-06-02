@@ -3,6 +3,10 @@
 All notable changes to the "xamlstyler" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.4.0]
+### Added
+- Added support for `.slnx` solution files as configuration file search roots
+
 ## [1.3.1]
 ### Fixed
 - Support spaces in external config file paths (#12)
