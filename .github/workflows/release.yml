@@ -42,6 +42,7 @@ jobs:
         run: npx vsce package
 
       - name: Publish VSCode Extension
+        continue-on-error: true
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
@@ -55,6 +56,7 @@ jobs:
           fi
 
       - name: Publish Open VSX Extension
+        continue-on-error: true
         env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
         run: |
