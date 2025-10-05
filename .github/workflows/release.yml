@@ -45,10 +45,26 @@ jobs:
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
+          if [ -z "$VSCE_PAT" ]; then
+            echo "VSCE_PAT secret not set. Skipping VSCode publication." && exit 0
+          fi
           if [ "${{ inputs.prerelease }}" = "true" ]; then
             npx vsce publish --pre-release
           else
             npx vsce publish
+          fi
+
+      - name: Publish Open VSX Extension
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: |
+          if [ -z "$OVSX_PAT" ]; then
+            echo "OVSX_PAT secret not set. Skipping Open VSX publication." && exit 0
+          fi
+          if [ "${{ inputs.prerelease }}" = "true" ]; then
+            npx ovsx publish ./xamlstyler-${{ steps.get_version.outputs.VERSION }}.vsix --pre-release
+          else
+            npx ovsx publish ./xamlstyler-${{ steps.get_version.outputs.VERSION }}.vsix
           fi
 
       - name: Create GitHub release
