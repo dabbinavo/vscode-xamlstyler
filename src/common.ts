@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 /**
  * Keep the {@link languages} in sync with {@link file://./../package.json} > activationEvents
  */
-const languages = ["xaml", "AXAML", "xml"]; 
+const languages = ["xaml", "AXAML", "xml", "axaml"]; 
 
 const xamlPattern = "**/*.{xaml,axaml,axml}";
 
