@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.4.1]
+## [1.6.0]
 ### Added
 - Register formatter for `axaml` language identifier. [#20](https://github.com/dabbinavo/vscode-xamlstyler/issues/20)
 
