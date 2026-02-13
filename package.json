@@ -25,7 +25,8 @@
   "activationEvents": [
     "onLanguage:xml",
     "onLanguage:AXAML",
-    "onLanguage:xaml"
+    "onLanguage:xaml",
+    "onLanguage:axaml"
   ],
   "main": "./dist/extension.js",
   "contributes": {
