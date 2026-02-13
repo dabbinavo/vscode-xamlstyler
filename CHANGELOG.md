@@ -1,7 +1,8 @@
 # Change Log
 
-All notable changes to the "xamlstyler" extension will be documented in this file.
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [1.4.1]
+### Added
+- Register formatter for `axaml` language identifier. [#20](https://github.com/dabbinavo/vscode-xamlstyler/issues/20)
 
 ## [1.4.0]
 ### Added
