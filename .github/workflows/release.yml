@@ -64,9 +64,9 @@ jobs:
             echo "OVSX_PAT secret not set. Skipping Open VSX publication." && exit 0
           fi
           if [ "${{ inputs.prerelease }}" = "true" ]; then
-            npx ovsx publish ./xamlstyler-${{ PACKAGE_VERSION }}.vsix --pre-release
+            npx ovsx publish ./xamlstyler-${{ env.PACKAGE_VERSION }}.vsix --pre-release
           else
-            npx ovsx publish ./xamlstyler-${{ PACKAGE_VERSION }}.vsix
+            npx ovsx publish ./xamlstyler-${{ env.PACKAGE_VERSION }}.vsix
           fi
 
       - name: Create GitHub release
@@ -76,8 +76,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ PACKAGE_VERSION }}
-          release_name: v${{ PACKAGE_VERSION }}
+          tag_name: v${{ env.PACKAGE_VERSION }}
+          release_name: v${{ env.PACKAGE_VERSION }}
           prerelease: ${{ inputs.prerelease }}
 
       - name: Upload VSIX to GitHub release
@@ -87,6 +87,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./xamlstyler-${{ PACKAGE_VERSION }}.vsix
-          asset_name: xamlstyler-${{ PACKAGE_VERSION }}.vsix
+          asset_path: ./xamlstyler-${{ env.PACKAGE_VERSION }}.vsix
+          asset_name: xamlstyler-${{ env.PACKAGE_VERSION }}.vsix
           asset_content_type: application/vnd.microsoft.vscode.vsix
