@@ -17,7 +17,7 @@ export class XamlFormatter {
     const provider = new XamlDocumentFormattingEditProvider();
     this._disposable = vscode.languages.registerDocumentFormattingEditProvider(
       selector,
-      provider
+      provider,
     );
   }
 
@@ -40,7 +40,7 @@ class XamlDocumentFormattingEditProvider
 
   provideDocumentFormattingEdits(
     document: vscode.TextDocument,
-    options: vscode.FormattingOptions
+    options: vscode.FormattingOptions,
   ): vscode.ProviderResult<vscode.TextEdit[]> {
     return this.formatter.formatDocument(document, options);
   }
@@ -49,7 +49,7 @@ class XamlDocumentFormattingEditProvider
 class Formatter {
   public formatDocument(
     document: vscode.TextDocument,
-    options: vscode.FormattingOptions
+    options: vscode.FormattingOptions,
   ): Thenable<vscode.TextEdit[]> {
     return new Promise((resolve, reject) => {
       const firstLine = document.lineAt(0);
@@ -69,7 +69,7 @@ class Formatter {
         const tempDir = os.tmpdir();
         const tempBaseName = path.join(
           tempDir,
-          `xamlstyler-${randomBytes(16).toString("hex")}`
+          `xamlstyler-${randomBytes(16).toString("hex")}`,
         );
         const filename = `${tempBaseName}${extension}`;
 
@@ -80,13 +80,13 @@ class Formatter {
 
         var configurationResolver = new XamlConfigurationResolver();
         let configurationPath = configurationResolver.resolveConfiguration(
-          document.uri
+          document.uri,
         );
 
         if (!configurationPath) {
           configurationPath = this.createJsonConfigFromVsCodeSettings(
             document.uri,
-            `${tempBaseName}.Settings.XamlStyler`
+            `${tempBaseName}.Settings.XamlStyler`,
           );
           filesToDelete.push(configurationPath);
         }
@@ -100,11 +100,11 @@ class Formatter {
             resolve([
               vscode.TextEdit.replace(
                 new vscode.Range(firstLine.range.start, lastLine.range.end),
-                formattedText
+                formattedText,
               ),
             ]);
           },
-          reject
+          reject,
         );
       } catch (e) {
         filesToDelete.forEach((file) => {
@@ -117,7 +117,7 @@ class Formatter {
 
   private createJsonConfigFromVsCodeSettings(
     documentPath: vscode.Uri,
-    outputPath: string
+    outputPath: string,
   ): string {
     let jsonString = XamlConfigurationManager.createJsonConfig(documentPath);
     fs.writeFileSync(outputPath!, jsonString);
@@ -127,7 +127,7 @@ class Formatter {
   private runXStyler(
     filePath: string,
     configurationPath: string,
-    options: vscode.FormattingOptions
+    options: vscode.FormattingOptions,
   ): Thenable<string> {
     return new Promise((resolve, reject) => {
       const useGlobalTool = getXamlStylerConfig().get<boolean>("useGlobalTool");
@@ -142,9 +142,9 @@ class Formatter {
           extensionPath!,
           "tools",
           "xstyler",
-          "xstyler.dll"
+          "xstyler.dll",
         );
-        parameters.push(xstyler);
+        parameters.push(`"${xstyler}"`);
       }
       parameters.push("--file", `"${filePath}"`);
       parameters.push("--write-to-stdout");
@@ -162,17 +162,17 @@ class Formatter {
           outputChannel.appendLine(`${error}`);
           let traces = stderr.split("\n");
           vscode.window.showErrorMessage(traces[1]);
-          reject(error);
+          return reject(error);
         }
         if (stdout.trim() === "") {
           outputChannel.appendLine(`${stderr}`);
           vscode.window.showErrorMessage(stderr);
-          reject(stderr);
+          return reject(stderr);
         } else {
           outputChannel.appendLine(stderr);
         }
         const whiteSpaceBehaviour = getXamlStylerConfig().get<string>(
-          "miscellaneous.fileWhiteSpaceBehavior"
+          "miscellaneous.fileWhiteSpaceBehavior",
         );
         // Remove BOM if present
         if (stdout.charCodeAt(0) === 0xfeff) {

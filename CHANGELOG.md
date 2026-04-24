@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.6.1]
+### Fixed
+- Allow whitespace characters in user directory [#22](https://github.com/dabbinavo/vscode-xamlstyler/issues/22)
+
 ## [1.6.0]
 ### Added
 - Register formatter for `axaml` language identifier. [#20](https://github.com/dabbinavo/vscode-xamlstyler/issues/20)
