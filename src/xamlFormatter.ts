@@ -144,7 +144,7 @@ class Formatter {
           "xstyler",
           "xstyler.dll"
         );
-        parameters.push(xstyler);
+        parameters.push(`"${xstyler}"`);
       }
       parameters.push("--file", `"${filePath}"`);
       parameters.push("--write-to-stdout");
