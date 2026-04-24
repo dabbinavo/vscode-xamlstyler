@@ -3,6 +3,7 @@
 ## [1.6.1]
 ### Fixed
 - Allow whitespace characters in user directory [#22](https://github.com/dabbinavo/vscode-xamlstyler/issues/22)
+- Update CI in order to remove deprecated functions
 
 ## [1.6.0]
 ### Added
